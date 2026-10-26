@@ -1,7 +1,7 @@
 /* Faizan e Madina Application - style.css  |  Developed by M. Umar Farooq */
 /* Faizan e Madina Application - style.css
    PC / laptop: sidebar + wide billing screen.  Phone: top app bar, bottom menu, 2-column products, bill as bottom sheet. */
-:root{--bg:#dbeafe;--card:#fff;--fg:#17211d;--mut:#6b7872;--line:#e1e7e3;--ac:#0e6b57;--ac2:#0b3d36;--gold:#d99a1b;--bad:#b3362e}
+:root{--bg:#f2f5f3;--card:#fff;--fg:#17211d;--mut:#6b7872;--line:#e1e7e3;--ac:#0e6b57;--ac2:#0b3d36;--gold:#d99a1b;--bad:#b3362e}
 @media(prefers-color-scheme:dark){:root:not([data-t=light]){--bg:#0f1512;--card:#17201b;--fg:#e8ede9;--mut:#93a09a;--line:#26322c;--ac:#35b894;--ac2:#0a1a15;--gold:#f0b73f;--bad:#f08a80}}
 :root[data-t=dark]{--bg:#0f1512;--card:#17201b;--fg:#e8ede9;--mut:#93a09a;--line:#26322c;--ac:#35b894;--ac2:#0a1a15;--gold:#f0b73f;--bad:#f08a80}
 *{box-sizing:border-box}body{margin:0;font:15px/1.45 'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--fg)}
