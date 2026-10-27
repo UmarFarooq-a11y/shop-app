@@ -212,3 +212,11 @@ table { width: 100%; }
   .bill-h { padding-left: 54px; padding-right: 10px; }
   .bill-logo { width: 36px; height: 36px; left: 10px; top: 10px; }
 }
+
+
+/* Payment status clarity on receipts and bill history */
+.stamp.partial{border-color:#d99a1b;color:#b77908;top:46%}
+.stamp.unpaid{border-color:#b3362e;color:#b3362e;top:46%}
+.chip.paid{color:var(--ac);border-color:color-mix(in srgb,var(--ac) 40%,var(--line))}
+.chip.partial{color:#b77908;border-color:#d99a1b}
+.chip.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
