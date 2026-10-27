@@ -220,3 +220,15 @@ table { width: 100%; }
 .chip.paid{color:var(--ac);border-color:color-mix(in srgb,var(--ac) 40%,var(--line))}
 .chip.partial{color:#b77908;border-color:#d99a1b}
 .chip.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
+
+/* ===== First-login community welcome ===== */
+.welcome-panel{max-width:900px;margin:0 auto 16px;border-top:4px solid var(--gold);padding:clamp(18px,3vw,30px)}
+.welcome-kicker{font-size:.72rem;letter-spacing:2px;font-weight:700;color:var(--ac);margin:0 0 6px}
+.welcome-panel h2{margin:0 0 8px}
+.welcome-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}
+.welcome-list>div{display:flex;flex-direction:column;gap:5px;padding:14px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--ac) 5%,var(--card));min-width:0}
+.welcome-list b{color:var(--fg)}
+.welcome-list span{font-size:.88rem;color:var(--mut);line-height:1.5}
+.welcome-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.welcome-note{font-size:.78rem;color:var(--mut);margin:16px 0 0}
+@media(max-width:600px){.welcome-list{grid-template-columns:1fr}.welcome-actions>*{flex:1 1 100%}}
