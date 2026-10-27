@@ -221,14 +221,16 @@ table { width: 100%; }
 .chip.partial{color:#b77908;border-color:#d99a1b}
 .chip.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
 
-/* ===== First-login community welcome ===== */
-.welcome-panel{max-width:900px;margin:0 auto 16px;border-top:4px solid var(--gold);padding:clamp(18px,3vw,30px)}
-.welcome-kicker{font-size:.72rem;letter-spacing:2px;font-weight:700;color:var(--ac);margin:0 0 6px}
-.welcome-panel h2{margin:0 0 8px}
-.welcome-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}
-.welcome-list>div{display:flex;flex-direction:column;gap:5px;padding:14px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--ac) 5%,var(--card));min-width:0}
-.welcome-list b{color:var(--fg)}
-.welcome-list span{font-size:.88rem;color:var(--mut);line-height:1.5}
-.welcome-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-.welcome-note{font-size:.78rem;color:var(--mut);margin:16px 0 0}
-@media(max-width:600px){.welcome-list{grid-template-columns:1fr}.welcome-actions>*{flex:1 1 100%}}
+/* ===== First-login animated welcome screen ===== */
+.welcome-splash{
+  position:fixed;inset:0;z-index:9999;display:grid;place-items:center;
+  min-height:100dvh;padding:28px;text-align:center;overflow:hidden;
+  background:radial-gradient(ellipse at center,color-mix(in srgb,var(--ac) 24%,var(--bg)),var(--bg) 72%);
+}
+.welcome-message{width:min(760px,100%);animation:welcome-enter 1.1s cubic-bezier(.2,.75,.25,1) both}
+.welcome-small{margin:0 0 18px;color:var(--ac);font-size:.78rem;font-weight:700;letter-spacing:.28em;animation:welcome-enter 1s .12s both}
+.welcome-message h1{margin:0;color:var(--fg);font:700 clamp(2rem,5.5vw,3.6rem)/1.18 Georgia,serif;text-wrap:balance;animation:welcome-enter 1.2s .2s both}
+.welcome-line{display:block;width:84px;height:4px;margin:28px auto 0;border-radius:9px;background:var(--gold);transform-origin:center;animation:welcome-line 1s .6s both}
+@keyframes welcome-enter{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes welcome-line{from{opacity:0;transform:scaleX(0)}to{opacity:1;transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){.welcome-message,.welcome-small,.welcome-message h1,.welcome-line{animation:none}}
