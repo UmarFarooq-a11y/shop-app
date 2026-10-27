@@ -48,15 +48,26 @@ async function resetAdmin(){const r=await ask('Reset admin password',[['Admin na
   try{await api('resetAdmin',{username:r[0],next:r[1]});toast('Password changed. Sign in now.')}catch(e){toast(e.message,1)}}
 /* ---- home ---- */
 async function homeV(){
-  const T=[['bill','🧾','New Bill','Create a bill, record payment and print or share a receipt'],['detail','🔎','Product Detail','Find a product and check its prices'],['about','ℹ️','About Application','Learn about the application and its features'],['history','🗂️','Bills & Receipts','Find a saved bill and review its payment status'],['admin','🛠️','Admin Dashboard','Manage products, reports, users and settings',1]];
   const welcomeKey='welcome:'+ME.role+':'+ME.name;
-  const showWelcome=!!URLX && !(await kget(welcomeKey));
-  const heading=showWelcome?'Welcome to the Faizan e Madina Application Community':'Assalamualaikum, '+esc(ME.name);
-  const intro=showWelcome?'Welcome, '+esc(ME.name)+'. Your account is ready. We’re glad to have you with us.':(LOCAL()?'Local mode: data stays on this device and no sign-in is needed.':'Connected to your Google Sheet.');
-  const welcome=showWelcome ? '<section class="card welcome-panel"><p class="welcome-kicker">A WARM WELCOME</p><h2>Let’s get you started</h2><p class="st">Here are a few things you can do in the application:</p><div class="welcome-list"><div><b>1. Create a bill</b><span>Choose products, adjust quantities and discounts, and enter the amount received.</span></div><div><b>2. Give a clear receipt</b><span>Print or save the receipt with Paid, Partial Payment or Not Paid status and the remaining balance.</span></div><div><b>3. Find bills later</b><span>Open Bills &amp; Receipts to review previous bills and their payment details.</span></div><div><b>4. Keep records in sync</b><span>When connected, the application can sync with the configured Google Sheet.</span></div>'+(isA()?'<div><b>5. Manage the shop</b><span>Use Admin Dashboard for products, reports, users and settings.</span></div>':'')+'</div><div class="welcome-actions"><button onclick="dismissWelcome()">Continue to dashboard</button><button class="g" onclick="go(&quot;bill&quot;)">Create first bill</button></div><p class="welcome-note">Tip: Check the bill total, received amount and remaining balance before completing a bill.</p></section>' : '';
-  $('#app').innerHTML='<div class="hero"><img class="hi" src="'+ICON_IMG+'" alt=""><div><h2>'+heading+'</h2><p>'+intro+'</p></div><button onclick="go(&quot;bill&quot;)">Start new bill</button></div>'+welcome+'<div class="tiles">'+T.filter(x=>!x[4]||isA()).map((x,i)=>'<button class="tile t'+(i+1)+'" onclick="go(&quot;'+x[0]+'&quot;)"><span class="ic">'+x[1]+'</span><b>'+x[2]+'</b><span class="st">'+x[3]+'</span></button>').join('')+'</div>';
+  if(URLX && !(await kget(welcomeKey))){
+    const userName=ME.name;
+    $('.shell').classList.add('solo');
+    $('#app').innerHTML='<section class="welcome-splash" aria-label="Welcome"><div class="welcome-message"><p class="welcome-small">FAIZAN E MADINA</p><h1>Welcome to Faizan e Madina Application Community</h1><span class="welcome-line" aria-hidden="true"></span></div></section>';
+    try{await kset(welcomeKey,true)}catch(e){}
+    setTimeout(()=>{
+      if(PAGE==='home' && ME.name===userName){
+        $('.shell').classList.remove('solo');
+        go('home');
+      }
+    },4000);
+    return;
+  }
+  $('.shell').classList.remove('solo');
+  const T=[['bill','🧾','New Bill','Create a bill, record payment and print or share a receipt'],['detail','🔎','Product Detail','Find a product and check its prices'],['about','ℹ️','About Application','Learn about the application and its features'],['history','🗂️','Bills & Receipts','Find a saved bill and review its payment status'],['admin','🛠️','Admin Dashboard','Manage products, reports, users and settings',1]];
+  const heading='Assalamualaikum, '+esc(ME.name);
+  const intro=LOCAL()?'Local mode: data stays on this device and no sign-in is needed.':'Connected to your Google Sheet.';
+  $('#app').innerHTML='<div class="hero"><img class="hi" src="'+ICON_IMG+'" alt=""><div><h2>'+heading+'</h2><p>'+intro+'</p></div><button onclick="go(&quot;bill&quot;)">Start new bill</button></div><div class="tiles">'+T.filter(x=>!x[4]||isA()).map((x,i)=>'<button class="tile t'+(i+1)+'" onclick="go(&quot;'+x[0]+'&quot;)"><span class="ic">'+x[1]+'</span><b>'+x[2]+'</b><span class="st">'+x[3]+'</span></button>').join('')+'</div>';
 }
-async function dismissWelcome(){await kset('welcome:'+ME.role+':'+ME.name,true);await homeV();}
 /* ---- products data ---- */
 async function loadProducts(){if(navigator.onLine&&TOK&&URLX){try{await syncNow();const j=await api('getProducts');if(j.columns)await saveCfg(j.columns);if(j.staffcols){SC=j.staffcols;await kset('staffcols',SC)}if(!(await all('queue')).length){for(const p of j.products){p.id=p.productId;p.active=String(p.active).toUpperCase()!='FALSE';p.prices=p.prices||{};p.details=p.details||{};await put('products',p)}}}catch(e){}}PRODUCTS=await all('products')}
 function PL(p){return CFG.prices.map(c=>[c.label,(p.prices||{})[c.key]]).filter(x=>x[1]!==''&&x[1]!=null&&!isNaN(+x[1])).map(x=>[x[0],+x[1]])}
