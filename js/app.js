@@ -239,7 +239,7 @@ async function saveP(id){const g=k=>$('#p_'+k).value.trim(),o={productId:id||'P-
   for(const c of CFG.prices){const v=$('#x_'+c.key).value.trim();if(v!==''&&(isNaN(+v)||+v<0))return $('#pe').textContent=c.label+' must be a number, 0 or more.';o.prices[c.key]=v===''?'':+v}
   for(const c of CFG.details)o.details[c.key]=$('#x_'+c.key).value.trim();
   o.stock=o.stock===''?'':+o.stock;o.cost=o.cost===''?'':+o.cost;
-  const old=PRODUCTS.find(x=>x.id==o.productId);if(!id){const norm=v=>String(v??'').trim().toLowerCase(),samePrice=p=>CFG.prices.every(c=>String((p.prices||{})[c.key]??'')===String(o.prices[c.key]??''));if(PRODUCTS.some(p=>norm(p.name)===norm(o.name)&&norm(p.category)===norm(o.category)&&samePrice(p)))return $('#pe').textContent='This product already exists with the same category and prices. Duplicate not saved.'}
+  const old=PRODUCTS.find(x=>x.id==o.productId);if(!id){const norm=v=>String(v??'').trim().toLowerCase(),samePrice=p=>CFG.prices.every(c=>String((p.prices||{})[c.key]??'')===String(o.prices[c.key]??''));if(PRODUCTS.some(p=>norm(p.name)===norm(o.name)&&norm(p.category)===norm(o.category)&&norm(p.shop)===norm(o.shop)&&samePrice(p)))return $('#pe').textContent='This product already exists with the same category and prices. Duplicate not saved.'}
   o.baseVersion=old?+old.version||0:0;o.version=o.baseVersion;o.id=o.productId;
   await put('products',o);await put('queue',{id:'P-'+o.productId,type:'product',data:o});stat();toast('Product saved');syncNow();adminV('products')}
 /* ---- import products (admin) ----
