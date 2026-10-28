@@ -74,10 +74,10 @@ async function loadProducts(){
     try{
       await syncNow();const j=await api('getProducts');
       if(j.columns)await saveCfg(j.columns);if(j.staffcols){SC=j.staffcols;await kset('staffcols',SC)}
-      const local=await all('products'),queue=await all('queue'),pending=new Map(queue.filter(x=>x.type=='product').map(x=>[String(x.data.productId||x.data.id),x.data])),cached=new Map(local.map(p=>[String(p.productId||p.id),p]));
+      const local=await all('products'),queue=await all('queue'),preserveStock=queue.some(x=>['bill','purchase','cancel'].includes(x.type)),pending=new Map(queue.filter(x=>x.type=='product').map(x=>[String(x.data.productId||x.data.id),x.data])),cached=new Map(local.map(p=>[String(p.productId||p.id),p]));
       for(const raw of j.products||[]){const p={...raw};p.productId=String(p.productId||p.id||'');if(!p.productId)continue;p.id=p.productId;p.active=String(p.active).toUpperCase()!='FALSE';p.prices=p.prices||{};p.details=p.details||{};
         const unsynced=pending.get(p.productId);if(unsynced){await put('products',{...unsynced,id:p.productId,productId:p.productId});continue}
-        await put('products',{...(cached.get(p.productId)||{}),...p,id:p.productId,productId:p.productId});
+        const previous=cached.get(p.productId);await put('products',{...(previous||{}),...p,...(preserveStock&&previous?{stock:previous.stock}:{}),id:p.productId,productId:p.productId});
       }
     }catch(e){}
   }
