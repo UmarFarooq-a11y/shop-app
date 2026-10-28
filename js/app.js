@@ -69,7 +69,20 @@ async function homeV(){
   $('#app').innerHTML='<div class="hero"><img class="hi" src="'+ICON_IMG+'" alt=""><div><h2>'+heading+'</h2><p>'+intro+'</p></div><button onclick="go(&quot;bill&quot;)">Start new bill</button></div><div class="tiles">'+T.filter(x=>!x[4]||isA()).map((x,i)=>'<button class="tile t'+(i+1)+'" onclick="go(&quot;'+x[0]+'&quot;)"><span class="ic">'+x[1]+'</span><b>'+x[2]+'</b><span class="st">'+x[3]+'</span></button>').join('')+'</div>';
 }
 /* ---- products data ---- */
-async function loadProducts(){if(navigator.onLine&&TOK&&URLX){try{await syncNow();const j=await api('getProducts');if(j.columns)await saveCfg(j.columns);if(j.staffcols){SC=j.staffcols;await kset('staffcols',SC)}if(!(await all('queue')).length){for(const p of j.products){p.id=p.productId;p.active=String(p.active).toUpperCase()!='FALSE';p.prices=p.prices||{};p.details=p.details||{};await put('products',p)}}}catch(e){}}PRODUCTS=await all('products')}
+async function loadProducts(){
+  if(navigator.onLine&&TOK&&URLX){
+    try{
+      await syncNow();const j=await api('getProducts');
+      if(j.columns)await saveCfg(j.columns);if(j.staffcols){SC=j.staffcols;await kset('staffcols',SC)}
+      const local=await all('products'),queue=await all('queue'),pending=new Map(queue.filter(x=>x.type=='product').map(x=>[String(x.data.productId||x.data.id),x.data])),cached=new Map(local.map(p=>[String(p.productId||p.id),p]));
+      for(const raw of j.products||[]){const p={...raw};p.productId=String(p.productId||p.id||'');if(!p.productId)continue;p.id=p.productId;p.active=String(p.active).toUpperCase()!='FALSE';p.prices=p.prices||{};p.details=p.details||{};
+        const unsynced=pending.get(p.productId);if(unsynced){await put('products',{...unsynced,id:p.productId,productId:p.productId});continue}
+        await put('products',{...(cached.get(p.productId)||{}),...p,id:p.productId,productId:p.productId});
+      }
+    }catch(e){}
+  }
+  PRODUCTS=await all('products');
+}
 function PL(p){return CFG.prices.map(c=>[c.label,(p.prices||{})[c.key]]).filter(x=>x[1]!==''&&x[1]!=null&&!isNaN(+x[1])).map(x=>[x[0],+x[1]])}
 const dtxt=p=>Object.values(p.details||{}).join(' ');
 /* ---- billing ---- */
