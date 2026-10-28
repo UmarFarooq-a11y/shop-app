@@ -255,7 +255,7 @@ async function doImport(L,auto){await loadProducts();const c1=CFG.prices.find(c=
   for(const p of L){const name=String(p.name||'').trim(),cat=String(p.cat||p.category||'').trim();if(!name||!cat){skip++;continue}
     const sp=p.sp==null||p.sp===''?'':+p.sp,cp=p.cp==null||p.cp===''?'':+p.cp,dn=cnt[nk(p)]>1,id=String(p.id||'P-'+Date.now().toString(36).toUpperCase()+add.length),key=identity(cat,name,sp,cp);
     if(have.has(id.toLowerCase())||existing.has(key)||seen.has(key)){skip++;continue}seen.add(key);
-    add.push({id,cat,sp,cp,no:p.no,name:dn?`${name} (Rs.${sp!==''?sp:cp})`:name)}
+    add.push({id,cat,sp,cp,no:p.no,name:dn?`${name} (Rs.${sp!==''?sp:cp})`:name})}
   if(!add.length){if(!auto)toast(`Nothing new: all ${skip} products are already there`);return 0}
   if(!auto&&!confirm(`${add.length} new products will be added${skip?` (${skip} already exist and are skipped)`:''}:\n${add.slice(0,12).map(x=>'• '+x.name).join('\n')}${add.length>12?'\n…':''}\n\nContinue?`))return;
   const NK=add.some(x=>x.no)?await ensureNoCol(add):null;for(const x of add){const o={productId:x.id,id:x.id,shop:'Book Centre',active:true,name:x.name,category:x.cat,stock:'',cost:'',prices:{},details:{},baseVersion:0,version:0};o.prices[k1]=x.sp;if(k2)o.prices[k2]=x.cp;if(x.no&&NK)o.details[NK]=String(x.no);
